@@ -6,4 +6,20 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Kantineappfinale\Kantineappfinale.csproj" />
+      <ProjectReference Include="..\Kantineapp\Kantineapp.csproj" />
+      <ProjectReference Include="..\Kantinneserver \Kantineserver.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.7" />
+      <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+      <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+      <PackageReference Include="System.ObjectModel" Version="4.3.0" />
+      <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+      <PackageReference Include="System.Text.Json" Version="9.0.0" />
+      <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    </ItemGroup>
+
 </Project>

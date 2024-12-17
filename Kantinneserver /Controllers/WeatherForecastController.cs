@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace Kantinneserver.Controllers;
 
 [ApiController]
