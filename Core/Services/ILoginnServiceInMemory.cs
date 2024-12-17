@@ -1,21 +1,31 @@
-using System.Collections.Concurrent;
 namespace Core.Services;
 
-public class LoginServiceInMemory : ILoginService
+public class LoginServiceInMemory 
 {
-    private readonly List<(string Username, string Password)> _users = new()
-    {
-        ("admin", "password"),
-        ("user", "1234")
-    };
+    private readonly Dictionary<string, string> _users;
 
-    public Task<bool> LoginAsync(string username, string password)
+    public LoginServiceInMemory()
     {
-        return Task.FromResult(_users.Any(user => user.Username == username && user.Password == password));
+        // Mock users: Username => Password
+        _users = new Dictionary<string, string>
+        {
+            { "admin", "password123" },
+            { "user", "pass1234" }
+        };
     }
 
-    public Task<bool> ValidateUserAsync(string username, string password)
+    public Task<bool> AuthenticateAsync(string username, string password)
     {
-        throw new NotImplementedException();
+        // Validate credentials against the mock user list
+        return Task.FromResult(result: _users.TryGetValue(key: username, value: out var storedPassword) && storedPassword == password);
+    }
+
+    public Task<bool> RegisterAsync(string username, string password)
+    {
+        if (_users.ContainsKey(key: username))
+            return Task.FromResult(result: false);
+
+        _users[key: username] = password;
+        return Task.FromResult(result: true);
     }
 }

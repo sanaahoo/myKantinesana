@@ -1,33 +1,33 @@
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MyKantine.Repositories;
-using MyKantine.Models;
-namespace ThriftShopAPI.Controllers
+
+using Kantineapp.Pages;
+using Kantineserver.Repositories;
+
+
+namespace Kantineserver.Controllers
 {
+    [Route(template: "api/admins")]
     [ApiController]
-    [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-        private IUserRepo _userRepo;
-        public LoginController(IUserRepo userRepo)
-        {
-            _userRepo = userRepo;
-        }
-        [HttpPost]
+        private readonly ILoginRepository _repo;
 
-        public async Task<Usernname> Login(UserAuthentication ua)
+        public LoginController(ILoginRepository repo)
         {
-            
-            var user = await _userRepo.GetUser(ua.Email.ToLower());
-            if (user == null)
-            {
-                return null;
-            }
-            if (user.Password == ua.Password)
-            {
-                return user;
-            }
-            return null;
+            _repo = repo;
+        }
+
+        [HttpGet]
+        [Route(template: "verify")]
+        public bool VerifyLogin([FromQuery] string username, [FromQuery] string password)
+        {
+            return _repo.VerifyLogin(username: username, password: password);
+        }
+
+        [HttpGet]
+        [Route(template: "getadmin")]
+        public Login? GetAdmin([FromQuery] string username)
+        {
+            return _repo.GetLogin(username: username);
         }
     }
 }

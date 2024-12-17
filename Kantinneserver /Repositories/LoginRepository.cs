@@ -1,68 +1,34 @@
+using MongoDB.Driver;
+using Core.Models;
 using Kantineapp.Pages;
-using Kantinneserver.Repositories;
+using Kantineserver.Repositories;
 
-namespace Kantinneserver.Repositories
+
+namespace Kantineserver.Repositories;
+
+public class LoginRepository : ILoginRepository
 {
-    public class LoginRepository : ILoginRepository 
+    // Hardcoded valid credentials for demonstration purposes
+    private readonly Dictionary<string, string> _validUsers = new()
     {
-        private readonly List<Login> _users = new();
-        private string connectionString = "mongodb+srv://sanaa2104:9xRHv28k5gLVqjL5@cluster0.uvwry.mongodb.net/";
+        { "admin", "password123" },
+        { "user", "pass1234" }
+    };
 
-   
-        IMongoClient mongoClient;
+    public Task<bool> AuthenticateAsync(string username, string password)
+    {
+        // Check if the username exists and the password matches
+        var isAuthenticated = _validUsers.TryGetValue(key: username, value: out var storedPassword) && storedPassword == password;
+        return Task.FromResult(result: isAuthenticated);
+    }
 
-        IMongoDatabase database;
+    public Login? GetLogin(string username)
+    {
+        throw new NotImplementedException();
+    }
 
-        IMongoCollection<Login> collection;
-        public LoginRepository()
-        {
-            //var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
-            //   string connectionString = config["ConnectionStrings:MyConnectionString"];
-
-
-
-            mongoClient = new MongoClient(connectionString);
-
-            
-
-            database = mongoClient.GetDatabase("kantinedb");
-
-            collection = database.GetCollection<Login>("login_collection");
-        }
-
-        /*public LoginRepository(string? s, string yourdatabasename, string login)
-        {
-            throw new NotImplementedException();
-        }
-*/
-        public Task<IEnumerable<Login>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public Task<Login> CheckLogin(string Username)
-        {
-            foreach (var login in GetAllAsync())
-            {
-            }
-
-
-
-            _
-        }
-
-        public Task<bool> UpdateAsync(Login login)
-        {
-            var existingUser = _users.FirstOrDefault(u => u.Id == login.Id);
-            if (existingUser != null)
-            {
-                existingUser.Navn = login.Navn;
-                existingUser.Email = login.Email;
-                return Task.FromResult(true);
-            }
-
-            return Task.FromResult(false);
-
-
-        }
+    public bool VerifyLogin(string username, string password)
+    {
+        throw new NotImplementedException();
+    }
+}

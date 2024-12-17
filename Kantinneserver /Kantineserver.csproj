@@ -24,6 +24,8 @@
         <PackageReference Include="System.Text.Json" Version="9.0.0" />
         <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
+        <PackageReference Include="Vxp.BiFrost.WeatherForecast" Version="2023.5.1.1" />
+        <PackageReference Include="WeatherForecastAPI" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>

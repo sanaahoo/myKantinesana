@@ -1,75 +1,53 @@
-@page "/login/{target:alpha}"
-@using Microsoft.AspNetCore.Components.Forms
-@inject NavigationManager navManager
-@using MongoDB.Driver
-@inject ILoginService loginService
-@inject HttpClient Http
+@page "/login"
+@inject ILoginRepository LoginRepository
+@inject NavigationManager NavigationManager
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h3>Login</h3>
-                </div>
-                <div class="card-body">
-                    <EditForm EditContext="@_editContext" OnSubmit="@HandleSubmit">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <InputText id="email" class="form-control" @bind-Value="userAuthentication.Email" placeholder="Enter your email" />
-                        </div>
+<link href="css/login.css" rel="stylesheet" />
+@layout MainLayout
 
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <InputText type="password" id="password" class="form-control" @bind-Value="userAuthentication.Password" placeholder="Enter your password" />
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
-                    </EditForm>
-
-                    
-                    </div>
-                </div>
-            </div>
+<h3>Login</h3>
+<div class="login-container">
+    <form @onsubmit="HandleLogin">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" @bind="Username" />
         </div>
-    </div>
-
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" @bind="Password" />
+        </div>
+        <button type="submit">Login</button>
+        <p class="@((Message == "Login successful!") ? "success" : "")">@Message</p>
+    </form>
+</div>
 
 @code {
+    private string Username { get; set; } = string.Empty;
+    private string Password { get; set; } = string.Empty;
+    private string Message { get; set; } = string.Empty;
 
-    private class UserAuthentication
+    private async Task HandleLogin()
     {
-    }
+        // Call the login repository to validate credentials
+        var isAuthenticated = await LoginRepository.AuthenticateAsync(username: Username, password: Password);
 
-    private UserAuthentication userAuthentication = new();
-private EditContext? _editContext;
-private User? user = null;
-[Parameter]
-public string target { get; set; }
-
-protected override void OnInitialized()
-{
-_editContext = new EditContext(userAuthentication);
-
-}
-
-private async Task HandleSubmit()
-{
-    var response = await Http.PostAsJsonAsync("https://localhost:7077/api/Login", userAuthentication);
-    if (response.IsSuccessStatusCode)
-    {
-        user = await response.Content.ReadFromJsonAsync<User>();
-        if (user != null)
+        if (isAuthenticated)
         {
-            await loginService.Login(user);
-            navManager.NavigateTo(target);
+            Message = "Login successful!";
+            await Task.Delay(millisecondsDelay: 1000);
+
+            // Redirect to the home page
+            NavigationManager.NavigateTo(uri: "/");
+        }
+        else
+        {
+            Message = "Invalid username or password.";
         }
     }
-    else
+
+    private interface ILoginRepository
     {
-// Handle login failure (e.g., show error message)
-        Console.WriteLine("Login failed");
+        Task<bool> AuthenticateAsync(string username, string password);
     }
+
 }
-
-
