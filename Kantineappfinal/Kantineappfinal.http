@@ -1,0 +1,6 @@
+@Kantineappfinal_HostAddress = http://localhost:5234
+
+GET {{Kantineappfinal_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
